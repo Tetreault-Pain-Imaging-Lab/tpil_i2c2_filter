@@ -4,8 +4,6 @@ import os
 import numpy as np
 import nibabel as nib
 import tempfile
-import shutil
-import pytest
 
 
 def create_dummy_nifti(path, shape=(2, 2, 2, 4), value=1.0):
@@ -32,12 +30,14 @@ def test_tpil_calculate_tstat_cli():
         create_dummy_nifti(nifti_path, (2, 2, 2, 4), value=1.0)
         create_text_file(subj_path, ['s1', 's1', 's2', 's2'])
         create_text_file(group_path, ['A', 'A', 'B', 'B'])
-        cmd = [sys.executable, 'tpil_calculate_tstat.py',
-               '--nifti_4d', nifti_path,
-               '--subject_file', subj_path,
-               '--group_file', group_path,
-               '--output_tstat', tstat_out,
-               '--output_pval', pval_out]
+        cmd = [
+            sys.executable, 'tpil_calculate_tstat.py',
+            '--nifti_4d', nifti_path,
+            '--subject_file', subj_path,
+            '--group_file', group_path,
+            '--output_tstat', tstat_out,
+            '--output_pval', pval_out
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         assert result.returncode == 0
         assert os.path.isfile(tstat_out)
@@ -58,11 +58,13 @@ def test_tpil_calculate_i2c2_cli():
         create_dummy_nifti(mask_path, (2, 2, 2), value=1.0)
         create_text_file(subj_path, ['s1', 's1', 's2', 's2'])
         create_text_file(visit_path, ['v1', 'v2', 'v1', 'v2'])
-        cmd = [sys.executable, 'tpil_calculate_i2c2.py',
-               '--nifti_file', nifti_path,
-               '--roi_mask', mask_path,
-               '--subject_file', subj_path,
-               '--visit_file', visit_path]
+        cmd = [
+            sys.executable, 'tpil_calculate_i2c2.py',
+            '--nifti_file', nifti_path,
+            '--roi_mask', mask_path,
+            '--subject_file', subj_path,
+            '--visit_file', visit_path
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         assert result.returncode == 0
         assert 'I2C2 within ROI' in result.stdout
@@ -81,16 +83,18 @@ def test_tpil_i2c2_filter_cli():
         create_text_file(subj_path, ['s1', 's1', 's2', 's2'])
         create_text_file(group_path, ['A', 'A', 'B', 'B'])
         create_text_file(visit_path, ['v1', 'v2', 'v1', 'v2'])
-        cmd = [sys.executable, 'tpil_i2c2_filter.py',
-               '--nifti_4d', nifti_path,
-               '--subject_file', subj_path,
-               '--group_file', group_path,
-               '--visit_file', visit_path,
-               '--output_file', out_path,
-               '--stat_threshold', '0.0',
-               '--size_threshold', '1',
-               '--i2c2_threshold', '0.0',
-               '--mask', mask_path]
+        cmd = [
+            sys.executable, 'tpil_i2c2_filter.py',
+            '--nifti_4d', nifti_path,
+            '--subject_file', subj_path,
+            '--group_file', group_path,
+            '--visit_file', visit_path,
+            '--output_file', out_path,
+            '--stat_threshold', '0.0',
+            '--size_threshold', '1',
+            '--i2c2_threshold', '0.0',
+            '--mask', mask_path
+        ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         assert result.returncode == 0
         assert os.path.isfile(out_path)

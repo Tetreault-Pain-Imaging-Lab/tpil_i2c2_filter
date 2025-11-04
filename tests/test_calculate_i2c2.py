@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from tpil_calculate_i2c2 import compute_i2c2
 
 

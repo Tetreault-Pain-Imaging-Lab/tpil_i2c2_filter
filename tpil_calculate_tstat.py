@@ -66,19 +66,37 @@ def calculate_tstat(data_4d, subjects, groups):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate group difference statistics map from 4D NIfTI data. Averaging across visits prior to t-test.")
-    parser.add_argument("--nifti_4d", required=True,
-                        help="Path to 4D NIfTI file (scans in 4th dimension)")
-    parser.add_argument("--subject_file", required=True,
-                        help="Text file with subject IDs (one per scan)")
-    parser.add_argument("--group_file", required=True,
-                        help="Text file with group labels (one per scan, e.g. clbp/con)")
-    parser.add_argument("--output_tstat", required=True,
-                        help="Output NIfTI file for t-statistic map")
-    parser.add_argument("--output_pval", required=True,
-                        help="Output NIfTI file for p-value map")
-    parser.add_argument("--mask", required=False,
-                        help="Optional NIfTI mask file. Only voxels within mask > 0 are analyzed.")
+        description=(
+            "Generate group difference statistics map from 4D NIfTI data. "
+            "Averaging across visits prior to t-test."
+        )
+    )
+    parser.add_argument(
+        "--nifti_4d", required=True,
+        help="Path to 4D NIfTI file (scans in 4th dimension)"
+    )
+    parser.add_argument(
+        "--subject_file", required=True,
+        help="Text file with subject IDs (one per scan)"
+    )
+    parser.add_argument(
+        "--group_file", required=True,
+        help="Text file with group labels (one per scan, e.g. clbp/con)"
+    )
+    parser.add_argument(
+        "--output_tstat", required=True,
+        help="Output NIfTI file for t-statistic map"
+    )
+    parser.add_argument(
+        "--output_pval", required=True,
+        help="Output NIfTI file for p-value map"
+    )
+    parser.add_argument(
+        "--mask", required=False,
+        help=(
+            "Optional NIfTI mask file. Only voxels within mask > 0 are analyzed."
+        )
+    )
     args = parser.parse_args()
 
     # Validate input files
@@ -87,12 +105,18 @@ def main():
     assert_file_exists(args.group_file, "Group list")
     if args.mask:
         assert_nifti_file(args.mask, "Mask")
-    if not (args.output_tstat.endswith('.nii') or args.output_tstat.endswith('.nii.gz')):
+    if not (
+        args.output_tstat.endswith('.nii') or args.output_tstat.endswith('.nii.gz')
+    ):
         raise ValueError(
-            f"Output tstat file must be a NIfTI file (.nii or .nii.gz): {args.output_tstat}")
-    if not (args.output_pval.endswith('.nii') or args.output_pval.endswith('.nii.gz')):
+            f"Output tstat file must be a NIfTI file (.nii or .nii.gz): {args.output_tstat}"
+        )
+    if not (
+        args.output_pval.endswith('.nii') or args.output_pval.endswith('.nii.gz')
+    ):
         raise ValueError(
-            f"Output pval file must be a NIfTI file (.nii or .nii.gz): {args.output_pval}")
+            f"Output pval file must be a NIfTI file (.nii or .nii.gz): {args.output_pval}"
+        )
 
     img_4d = nib.load(args.nifti_4d)
     data_4d = img_4d.get_fdata()

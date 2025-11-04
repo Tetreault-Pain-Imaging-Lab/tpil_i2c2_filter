@@ -22,29 +22,60 @@ def assert_nifti_file(path, desc):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Threshold and filter clusters by size and I2C2.")
-    parser.add_argument("--nifti_4d", required=True,
-                        help="Path to 4D NIfTI file (scans in 4th dimension)")
-    parser.add_argument("--visit_file", required=True,
-                        help="Text file with visit IDs (one per scan)")
-    parser.add_argument("--subject_file", required=True,
-                        help="Text file with subject IDs (one per scan)")
-    parser.add_argument("--group_file", required=True,
-                        help="Text file with group labels (one per scan, e.g. clbp/con)")
-    parser.add_argument("--output_file", required=True,
-                        help="Path to output NIfTI file for retained clusters")
-    parser.add_argument("--stat_threshold", type=float, default=2.0,
-                        help="Threshold for statistics map (default: 2.0)")
-    parser.add_argument("--size_threshold", type=int, default=50,
-                        help="Minimum cluster size (default: 50 voxels)")
-    parser.add_argument("--i2c2_threshold", type=float, default=0.7,
-                        help="Minimum I2C2 value for cluster (default: 0.7)")
-    parser.add_argument("--one_way", action="store_true",
-                        help="Use one-way thresholding (stat >= threshold only). Default is two-way (stat >= threshold or stat <= -threshold).")
-    parser.add_argument("--stat_map", required=False,
-                        help="Path to group difference/statistics map (NIfTI). If not provided, will be calculated from 4D NIfTI and group file.")
-    parser.add_argument("--mask", required=False,
-                        help="Optional NIfTI mask file. Only voxels within mask > 0 are analyzed.")
+        description="Threshold and filter clusters by size and I2C2."
+    )
+    parser.add_argument(
+        "--nifti_4d", required=True,
+        help="Path to 4D NIfTI file (scans in 4th dimension)"
+    )
+    parser.add_argument(
+        "--visit_file", required=True,
+        help="Text file with visit IDs (one per scan)"
+    )
+    parser.add_argument(
+        "--subject_file", required=True,
+        help="Text file with subject IDs (one per scan)"
+    )
+    parser.add_argument(
+        "--group_file", required=True,
+        help="Text file with group labels (one per scan, e.g. clbp/con)"
+    )
+    parser.add_argument(
+        "--output_file", required=True,
+        help="Path to output NIfTI file for retained clusters"
+    )
+    parser.add_argument(
+        "--stat_threshold", type=float, default=2.0,
+        help="Threshold for statistics map (default: 2.0)"
+    )
+    parser.add_argument(
+        "--size_threshold", type=int, default=50,
+        help="Minimum cluster size (default: 50 voxels)"
+    )
+    parser.add_argument(
+        "--i2c2_threshold", type=float, default=0.7,
+        help="Minimum I2C2 value for cluster (default: 0.7)"
+    )
+    parser.add_argument(
+        "--one_way", action="store_true",
+        help=(
+            "Use one-way thresholding (stat >= threshold only). "
+            "Default is two-way (stat >= threshold or stat <= -threshold)."
+        )
+    )
+    parser.add_argument(
+        "--stat_map", required=False,
+        help=(
+            "Path to group difference/statistics map (NIfTI). If not provided, "
+            "will be calculated from 4D NIfTI and group file."
+        )
+    )
+    parser.add_argument(
+        "--mask", required=False,
+        help=(
+            "Optional NIfTI mask file. Only voxels within mask > 0 are analyzed."
+        )
+    )
     args = parser.parse_args()
 
     # Validate input files
@@ -56,9 +87,12 @@ def main():
         assert_nifti_file(args.stat_map, "Stat map")
     if args.mask:
         assert_nifti_file(args.mask, "Mask")
-    if not (args.output_file.endswith('.nii') or args.output_file.endswith('.nii.gz')):
+    if not (
+        args.output_file.endswith('.nii') or args.output_file.endswith('.nii.gz')
+    ):
         raise ValueError(
-            f"Output file must be a NIfTI file (.nii or .nii.gz): {args.output_file}")
+            f"Output file must be a NIfTI file (.nii or .nii.gz): {args.output_file}"
+        )
 
     # Load subject, visit, group info
     with open(args.visit_file) as f:
@@ -69,7 +103,8 @@ def main():
         groups = np.array([line.strip() for line in f if line.strip()])
     if not (len(visits) == len(subjects) == len(groups)):
         raise ValueError(
-            "Visit, subject, and group files must have the same number of lines.")
+            "Visit, subject, and group files must have the same number of lines."
+        )
 
     # Load 4D data
     img_4d = nib.load(args.nifti_4d)
@@ -77,7 +112,8 @@ def main():
     n_scans = data_4d.shape[3]
     if n_scans != len(subjects):
         raise ValueError(
-            f"4D NIfTI has {n_scans} volumes, but {len(subjects)} subjects listed.")
+            f"4D NIfTI has {n_scans} volumes, but {len(subjects)} subjects listed."
+        )
 
     # Apply mask if provided
     if args.mask:
@@ -147,7 +183,9 @@ def main():
             'avg_stat': avg_stat
         })
         print(
-            f"Cluster {cluster_idx}: size={cluster_size}, I2C2={i2c2:.4f}, avg_stat={avg_stat:.4f} - kept")
+            f"Cluster {cluster_idx}: size={cluster_size}, I2C2={i2c2:.4f}, "
+            f"avg_stat={avg_stat:.4f} - kept"
+        )
 
     print(f"Kept {len(results)} clusters passing all thresholds.")
     # Create output map: clusters that pass filtering, voxel values = label ID

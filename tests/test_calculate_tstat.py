@@ -1,5 +1,5 @@
-import numpy as np
 import pytest
+import numpy as np
 from tpil_calculate_tstat import calculate_tstat
 
 
@@ -19,7 +19,8 @@ def test_calculate_tstat_two_groups():
     subjects = np.array(['s1', 's1', 's2', 's2', 's3', 's3', 's4', 's4'])
     groups = np.array(['A', 'A', 'A', 'A', 'B', 'B', 'B', 'B'])
     tstat_map, pval_map = calculate_tstat(data_4d, subjects, groups)
-    # All voxels: group B mean = 2, group A mean = 1, but zero variance, so t = -inf
+    # All voxels: group B mean = 2, group A mean = 1, but zero variance,
+    # so t = -inf
     assert np.all(np.isneginf(tstat_map))
     assert tstat_map.shape == (2, 2, 2)
     assert pval_map.shape == (2, 2, 2)

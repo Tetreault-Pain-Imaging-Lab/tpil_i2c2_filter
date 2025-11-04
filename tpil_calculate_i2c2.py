@@ -1,6 +1,5 @@
 import numpy as np
 import nibabel as nib
-import pandas as pd
 import argparse
 import os
 
@@ -19,12 +18,14 @@ def assert_nifti_file(path, desc):
 
 def compute_i2c2(data, subjects, visits):
     """
-    Compute the image intraclass correlation coefficient (I2C2) as in Shou et al. (2013).
+    Compute the image intraclass correlation coefficient (I2C2) as in Shou et al.
+    (2013).
     data: array of shape (n_subjects, n_visits, n_voxels)
     """
     n_subjects, n_visits, n_voxels = data.shape
 
-    # Subject means (n_subjects x n_voxels) (average for each subject across visits)
+    # Subject means (n_subjects x n_voxels) (average for each subject across
+    # visits)
     subj_means = np.nanmean(data, axis=1)
 
     # Grand mean (1 x n_voxels) (average across all subjects and visits)
@@ -86,8 +87,14 @@ def main():
     unique_visits = np.unique(visits)
 
     # Find subjects with all visits
-    subjects_with_all_visits = [subj for subj in unique_subjects if np.sum((subjects == subj)) == len(unique_visits)
-                                and all(np.sum((subjects == subj) & (visits == v)) == 1 for v in unique_visits)]
+    subjects_with_all_visits = [
+        subj for subj in unique_subjects
+        if np.sum((subjects == subj)) == len(unique_visits)
+        and all(
+            np.sum((subjects == subj) & (visits == v)) == 1
+            for v in unique_visits
+        )
+    ]
 
     if len(subjects_with_all_visits) == 0:
         raise ValueError("No subjects have all visits/scans.")
