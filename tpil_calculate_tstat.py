@@ -106,13 +106,15 @@ def main():
     if args.mask:
         assert_nifti_file(args.mask, "Mask")
     if not (
-        args.output_tstat.endswith('.nii') or args.output_tstat.endswith('.nii.gz')
+        args.output_tstat.endswith(
+            '.nii') or args.output_tstat.endswith('.nii.gz')
     ):
         raise ValueError(
             f"Output tstat file must be a NIfTI file (.nii or .nii.gz): {args.output_tstat}"
         )
     if not (
-        args.output_pval.endswith('.nii') or args.output_pval.endswith('.nii.gz')
+        args.output_pval.endswith(
+            '.nii') or args.output_pval.endswith('.nii.gz')
     ):
         raise ValueError(
             f"Output pval file must be a NIfTI file (.nii or .nii.gz): {args.output_pval}"

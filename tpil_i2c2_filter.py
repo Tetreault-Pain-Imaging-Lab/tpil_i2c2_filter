@@ -88,7 +88,8 @@ def main():
     if args.mask:
         assert_nifti_file(args.mask, "Mask")
     if not (
-        args.output_file.endswith('.nii') or args.output_file.endswith('.nii.gz')
+        args.output_file.endswith(
+            '.nii') or args.output_file.endswith('.nii.gz')
     ):
         raise ValueError(
             f"Output file must be a NIfTI file (.nii or .nii.gz): {args.output_file}"
